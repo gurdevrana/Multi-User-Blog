@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="/css/bootstrap-social.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-offset-4 col-xs-4 col-sm-offset-4 col-sm-4">
+            <div class="panel " style="width:100%;">
+  <div class="panel-heading form-heading" >
+    <h3 class="panel-title">{% block form_title%} {% endblock %}</h3>
+  </div>
+  <div class="panel-body">
+
+      <form method="post"  id="form-1">
+
+  <div class="form-group ">
+    <label for="username">UserName</label>
+      <br>
+    <input type="text" class="form-control input_field" id="username" name="username" >
+      <span >{{ name_error }} </span>
+  </div>
+
+
+{% block content%}
+ {% endblock %}
+ </form>
+
+  </div>
+</div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="/js/jquery.min.js" ></script>
+<script src="/js/bootstrap.js" ></script>
+</body>
+</html>

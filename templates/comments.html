@@ -1,0 +1,80 @@
+
+
+{% for c in comments  %}
+      <div style="width:100%;">
+      {{c.user}}:{{c.comment}}
+
+       <form method="post" style="display: inline" onsubmit="{% if c.user!=userid or userid=='Non' %}return mySubmitFunction(event){% endif%}">
+             <input type="hidden" name="formname" value="delete_comment">
+             <input type="hidden" name="comment_key" value="{{c.key().id()}}">
+            <button type="submit" onclick="{% if c.user!=userid %}
+                        delete_error()
+                    {% elif userid=='Non' %}
+                        login_comment_error()
+                        {% else %}
+                       {% endif %}     ">Delete</button> </form>
+
+         <button style="display: inline" onclick="{% if c.user!=userid %}
+                        comment_error()
+                    {% elif userid=='Non' %}
+                        login_comment_error()
+                    {% else %}
+                      collapse2('{{c.key().id()}}')
+                    {% endif %}
+
+      ">Edit </button>
+      <br>
+            <div  id="edit{{c.key().id()}}" class="hide-it">
+
+        <form method="post" >
+            <div class="container-fluid" >
+                <div class="row">
+                    <div class="col-xs-10 col-sm-11" style="margin: 0px;padding: 0px;">
+                        <input type="text" style="width:100%;" name="comment" value="{{c.comment}}" >
+                        <input type="hidden" name="comment_key" value="{{c.key().id()}}">
+                          <input type="hidden" name="formname" value="change_comment">
+                    </div>
+                    <div class="col-xs-2 col-sm-1" style="margin: 0px;padding: 0px;">
+                        <button type="submit"  style="float: right  ">change</button>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+      </div>
+      </div>
+<br>
+      {% endfor %}
+
+<script>
+     function collapse2 (i)
+     {
+         $("#edit"+i).toggleClass("hide-it");
+
+     }
+     function login_comment_error() {
+         alert("Please Login first")
+
+     }
+     function comment_error() {
+         alert("You cant edit other users comments")
+
+     }
+      function delete_error() {
+         alert("You cant delete other users comments")
+
+     }
+     function delete_comment(t) {
+
+      var data23 = {'comment_key': t,'form_name':"delete_comment"};
+      $.post({url: "/blog"},data23).done(function (data) {
+
+alert("done")
+      });}
+      function mySubmitFunction(evt) {
+         evt.preventDefault();
+         return false;
+
+      }
+</script>

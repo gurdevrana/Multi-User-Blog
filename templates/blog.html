@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/bootstrap-social.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+  <title>Blog</title>
+</head>
+
+<body>
+  <a href="/blog" class="main-title">
+    Blog
+  </a>
+
+  <div class="login-area">
+    {% if userid!="Non" %}
+      {{userid}} (<a class="login-link" href="/logout">logout</a>)
+    {% else %}
+      <a class="login-link" href="/">login</a>
+      |
+      <a class="login-link" href="/signup">signup</a>
+    {% endif %}
+  </div>
+
+  <div style="width:90%;margin: auto;">
+      <h5 style="text-align: right"><a href="{% if userid!='Non' %}/blog/newpost{% else %}/login{% endif %}"
+                                       onclick="{% if userid=='Non' %}
+                                                  login_error(){% endif %}  ">Add Post</a></h5>
+
+ {% for p in posts -%}
+
+
+    <div class="container-fluid" style="margin: 0px;padding: 0px;">
+    <div class="row" >
+    <div class="col-xs-9">
+        <h3 style="text-align: left" >user:{{p.username}}</h3>
+       <a href="/blog/{{p.key().id()}}"><h4 style="text-align: left">Subject:{{p.subject}}</h4></a>
+
+        {{ p.render() }}
+        <div class="post-content">
+{{p._render_text | safe}}
+   <!-- {{p._render_text | safe}}-->
+    </div>
+        <a  onclick="  {% if p.username==userid %}
+          fun_error()
+          {% elif userid=='Non' %}
+            login_error()
+            {% else %}
+            likeit('{{p.key().id()}}')
+            {% endif %}
+"><span id="like{{p.key().id()}}" class="{{obj.like_or_not(p.key().id())}}" ></span><h5 id="like-text{{p.key().id()}}" class="liketext">{{obj.like_html(p.key().id())}}</h5></a>
+     <!-- <a role="button" data-toggle="collapse"  data-target="#collapse"
+			aria-expanded="true" aria-controls="collapse{% print(i) %}">comment</a>
+      <div class="collapse " id="collapse{% print(i) %}" >-->
+      <a onclick="{% if p.username==userid %}
+                        fun2()
+                    {% elif userid=='Non' %}
+                        login_error()
+                    {% else %}
+                      collapse('{{p.key()}}')
+                    {% endif %}
+
+      ">comment</a>
+    {% set k=p.key().id() %}
+
+
+
+          <button type="button" id="likebutton" onclick="{% if p.username==userid %}
+          fun_error()
+          {% elif userid=='Non' %}
+            login_error()
+            {% else %}
+            likeit('{{k}}')
+            {% endif %}">
+              <span id="change{{p.key().id()}}">{{obj.likes(k)|safe}}</span>Likes</button>
+      <div  id="{{p.key()}}" class="hide-it">
+
+        <form method="post">
+            <div class="container-fluid" >
+                <div class="row">
+                    <div class="col-xs-10 col-sm-11" style="margin: 0px;padding: 0px;">
+                        <input type="text" style="width:100%;" name="comment" >
+                        <input type="hidden" name="post_key" value="{{p.key().id()}}">
+                        <input type="hidden" name="formname" value="submit_comment">
+                    </div>
+                    <div class="col-xs-2 col-sm-1" style="margin: 0px;padding: 0px;">
+                        <button type="submit"  style="float: right  ">Comment</button>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+      </div>
+        <input type="hidden" name="post_key2" value="{{p.key().id()}}" >
+        <br>
+<br>
+        {% set t=p.key().id() %}
+{{p.rendercomment(t,userid) | safe}}
+
+      {% block content %}
+        {% endblock %}
+
+   <!--     {% for c in comments  %}
+      <div style="width:100%;">
+      {{c.user}}:{{c.comment}}
+      gurdev:its a very awesome blog
+      </div>
+      {% endfor %}-->
+
+
+
+    </div>
+
+     <div class="col-xs-3">
+         <br>
+         <h4 style="text-align: right">{{p.created.strftime("%b %d, %Y")}}<br>
+         Modified:{{p.last_modified.strftime("%b %d, %Y")}}<br>
+         <a id="edit" onclick=" {% if p.username!=userid and userid!='Non' %}
+         editerror()
+        {% endif %}"
+         {% if p.username==userid %} href="/editpost/{{p.key().id()}}" {% endif %}
+         {% if userid=='Non' %} href="/" {% endif %}>EDIT</a>
+         <br>
+         <a onclick=" {% if p.username!=userid and userid!='Non' %}
+         deleteerror()
+        {% endif %}"
+         {% if p.username==userid %} href="/editpost/{{p.key().id()}}" {% endif %}
+            {% if userid=='Non' %} href="/" {% endif %}>Delete</a>
+
+
+         </h4>
+
+
+     </div>
+
+    </div>
+    </div>
+      <br>
+      <br>
+      {%- endfor %}
+  </div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script>
+  function fun1(z) {
+     $("#like"+z).toggleClass('glyphicon glyphicon-thumbs-up') ;
+
+    if($("#like"+z).hasClass('glyphicon-thumbs-up'))
+     {$("#like-text"+z).html("unlike");}
+     else{
+         $("#like-text"+z).html("like");
+     }
+  }
+  function fun2() {
+ alert("Either you havent login or its our own post");
+  }
+  function  collapse(i) {
+      $("#"+i).toggleClass("hide-it");
+
+  }
+
+  function likeit(t) {
+
+      var data23 = {'postkey': t};
+      $.get({url: "/like"},data23).done(function (data) {
+        $('#change'+t).html(data.numlikes);
+
+      });
+ $("#like"+t).toggleClass('glyphicon glyphicon-thumbs-up') ;
+
+    if($("#like"+t).hasClass('glyphicon-thumbs-up'))
+     {$("#like-text"+t).html("unlike");}
+     else{
+         $("#like-text"+t).html("like");
+     }
+  }
+function fun_error() {
+    alert("you cant like ur own post")
+
+}
+function login_error()
+{
+    alert("please login first")
+}
+function editerror()
+{alert("you cant edit other users post")
+
+}
+function edit(t) {
+      $('#edit').attr('href','/editpost/'+t);
+
+}
+function deleteerror() {
+alert("you cant delete other users post")
+
+}
+</script>
+</body>
+
+</html>
+

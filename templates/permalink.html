@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="/css/style.css" />
+
+  <title>Blog</title>
+</head>
+
+<body>
+  <a href="/blog" class="main-title">
+    Blog
+  </a>
+
+  <div class="login-area">
+    {% if userid!="Non" %}
+      {{userid.name}} (<a class="login-link" href="/logout">logout</a>)
+    {% else %}
+      <a class="login-link" href="/">login</a>
+      |
+      <a class="login-link" href="/signup">signup</a>
+    {% endif %}
+  </div>
+<a href="/blog"><button class="btn btn-default"  >Back</button></a>
+  <div style="width:70%;margin: auto;">
+
+    <div class="heading">
+    <span style="float: left;"><h3>{{post.subject}}</h3></span>
+        <span style="float: right"><h3>{{post.created.strftime("%b %d, %Y")}}</h3></span>
+    </div>
+    <br>
+    <br>
+
+    <div class="post-content">
+    {{ post.render()}}
+    {{post._render_text | safe}}
+    </div>
+
+  </div>
+  <br>
+
+</body>
+
+</html>
+
