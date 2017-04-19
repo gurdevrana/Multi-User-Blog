@@ -233,7 +233,7 @@ class BlogFront(check):
         # to check which form is submitted
         user = self.request.cookies.get("userID")
 
-        # check_cookie checks validation of
+        # check_cookie check if cookie is valid or not
         if self.check_cookie() :
             return self.redirect("/blog")
 
